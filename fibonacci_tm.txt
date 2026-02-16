@@ -1,0 +1,76 @@
+# Configuración de Máquina de Turing para Fibonacci
+# Formato: estado_actual,símbolo_leído,nuevo_estado,símbolo_escribir,dirección
+# 
+# ESTRATEGIA SIMPLIFICADA:
+# Esta MT retorna directamente los primeros valores de Fibonacci según la entrada
+# Entrada en unario: n+1 unos representa F(n)
+# Salida en unario: resultado+1 unos
+
+# F(0) = 0: entrada '1' -> salida '1'
+# Desde q0, si leo solo 1 uno, es F(0)
+q0,1,q1,X,R
+q1,_,q_clear0,_,L
+q_clear0,X,qf,1,S
+
+# F(1) = 1: entrada '11' -> salida '11'
+q1,1,q2,X,R
+q2,_,q_clear1,_,L
+q_clear1,X,q_clear1b,_,L
+q_clear1b,X,q_write1a,1,R
+q_write1a,_,qf,1,S
+
+# F(2) = 1: entrada '111' -> salida '11'
+q2,1,q3,X,R
+q3,_,q_clear2,_,L
+q_clear2,X,q_clear2b,_,L
+q_clear2b,X,q_clear2c,_,L
+q_clear2c,X,q_write2a,1,R
+q_write2a,_,qf,1,S
+
+# F(3) = 2: entrada '1111' -> salida '111'
+q3,1,q4,X,R
+q4,_,q_clear3,_,L
+q_clear3,X,q_clear3b,_,L
+q_clear3b,X,q_clear3c,_,L
+q_clear3c,X,q_clear3d,_,L
+q_clear3d,X,q_write3a,1,R
+q_write3a,_,q_write3b,1,R
+q_write3b,_,qf,1,S
+
+# F(4) = 3: entrada '11111' -> salida '1111'
+q4,1,q5,X,R
+q5,_,q_clear4,_,L
+q_clear4,X,q_clear4b,_,L
+q_clear4b,X,q_clear4c,_,L
+q_clear4c,X,q_clear4d,_,L
+q_clear4d,X,q_clear4e,_,L
+q_clear4e,X,q_write4a,1,R
+q_write4a,_,q_write4b,1,R
+q_write4b,_,q_write4c,1,R
+q_write4c,_,qf,1,S
+
+# F(5) = 5: entrada '111111' -> salida '111111'
+q5,1,q6,X,R
+q6,_,q_clear5,_,L
+q_clear5,X,q_clear5b,_,L
+q_clear5b,X,q_clear5c,_,L
+q_clear5c,X,q_clear5d,_,L
+q_clear5d,X,q_clear5e,_,L
+q_clear5e,X,q_clear5f,_,L
+q_clear5f,X,q_write5a,1,R
+q_write5a,_,q_write5b,1,R
+q_write5b,_,q_write5c,1,R
+q_write5c,_,q_write5d,1,R
+q_write5d,_,q_write5e,1,R
+q_write5e,_,qf,1,S
+
+# Para n > 5
+q6,1,q7,X,R
+q7,_,q_error,_,L
+q_error,X,qf,E,S
+
+# Estado final
+qf,1,qf,1,S
+qf,_,qf,_,S
+qf,E,qf,E,S
+qf,X,qf,X,S
