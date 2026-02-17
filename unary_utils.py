@@ -1,53 +1,23 @@
+"""Utilidades para conversión unaria ↔ decimal y cálculo de Fibonacci."""
+
 def decimal_to_unary(n):
-    """
-    Convierte un número decimal a representación unaria.
-    
-    Args:
-        n: Número entero no negativo
-        
-    Returns:
-        Cadena de unos representando n+1 unos
-        
-    Ejemplo:
-        decimal_to_unary(0) -> '1'
-        decimal_to_unary(5) -> '111111'
-    """
+    """Convierte decimal a unario: n → n+1 unos. Ej: 5 → '111111'."""
     if n < 0:
-        raise ValueError("El número debe ser no negativo")
+        raise ValueError("n debe ser no negativo")
     return '1' * (n + 1)
 
 
 def unary_to_decimal(unary_str):
-    """
-    Convierte una cadena unaria a número decimal.
-    
-    Args:
-        unary_str: Cadena de unos
-        
-    Returns:
-        Número entero representado
-        
-    Ejemplo:
-        unary_to_decimal('1') -> 0
-        unary_to_decimal('111111') -> 5
-    """
+    """Convierte unario a decimal: '111111' → 5."""
     if not unary_str or not all(c == '1' for c in unary_str):
-        raise ValueError("La cadena debe contener solo unos")
+        raise ValueError("Solo se permiten unos")
     return len(unary_str) - 1
 
 
 def fibonacci(n):
-    """
-    Calcula el n-ésimo número de Fibonacci.
-    
-    Args:
-        n: Posición en la sucesión (n >= 0)
-        
-    Returns:
-        F(n)
-    """
+    """Calcula F(n) iterativamente."""
     if n < 0:
-        raise ValueError("n debe ser no negativo")
+        raise ValueError("n >= 0")
     
     if n == 0:
         return 0
@@ -62,15 +32,7 @@ def fibonacci(n):
 
 
 def get_fibonacci_sequence(max_n):
-    """
-    Genera la sucesión de Fibonacci hasta F(max_n).
-    
-    Args:
-        max_n: Posición máxima
-        
-    Returns:
-        Lista de valores [F(0), F(1), ..., F(max_n)]
-    """
+    """Genera lista [F(0), F(1), ..., F(max_n)]."""
     sequence = []
     for i in range(max_n + 1):
         sequence.append(fibonacci(i))
@@ -78,16 +40,7 @@ def get_fibonacci_sequence(max_n):
 
 
 def verify_fibonacci_result(n, result_unary):
-    """
-    Verifica si el resultado en unario es correcto para F(n).
-    
-    Args:
-        n: Posición en la sucesión
-        result_unary: Resultado en notación unaria
-        
-    Returns:
-        True si es correcto, False en caso contrario
-    """
+    """Verifica si result_unary es F(n) correcto en unario."""
     try:
         result = unary_to_decimal(result_unary)
         expected = fibonacci(n)

@@ -1,16 +1,7 @@
+"""Carga configuración de Máquina de Turing desde archivo CSV."""
+
 def load_turing_machine_from_file(filename):
-    """
-    Carga una Máquina de Turing desde un archivo de configuración.
-    
-    Formato del archivo:
-    estado_actual,símbolo_leído,nuevo_estado,símbolo_escribir,dirección
-    
-    Args:
-        filename: Nombre del archivo de configuración
-        
-    Returns:
-        Tupla (states, alphabet, transitions, initial_state, accept_states)
-    """
+    """Carga MT desde archivo en formato: estado,símbolo,nuevo_estado,escribe,dirección."""
     states = set()
     alphabet = set()
     transitions = {}
@@ -20,15 +11,13 @@ def load_turing_machine_from_file(filename):
     try:
         with open(filename, 'r', encoding='utf-8') as file:
             for line_num, line in enumerate(file, 1):
-                # Ignorar comentarios y líneas vacías
                 line = line.strip()
                 if not line or line.startswith('#'):
                     continue
                 
-                # Parsear la línea
                 parts = line.split(',')
                 if len(parts) != 5:
-                    print(f"Advertencia: Línea {line_num} ignorada (formato incorrecto): {line}")
+                    print(f"Advertencia: Línea {line_num} ignorada: {line}")
                     continue
                 
                 current_state, read_symbol, next_state, write_symbol, direction = parts
@@ -38,30 +27,23 @@ def load_turing_machine_from_file(filename):
                 write_symbol = write_symbol.strip()
                 direction = direction.strip().upper()
                 
-                # Validar dirección
                 if direction not in ['L', 'R', 'S']:
-                    print(f"Advertencia: Línea {line_num} - Dirección inválida: {direction}")
+                    print(f"Advertencia: Línea {line_num} dirección inválida: {direction}")
                     continue
                 
-                # Agregar estados
                 states.add(current_state)
                 states.add(next_state)
-                
-                # Agregar símbolos al alfabeto
                 alphabet.add(read_symbol)
                 alphabet.add(write_symbol)
                 
-                # Agregar transición
                 key = (current_state, read_symbol)
                 if key in transitions:
-                    print(f"Advertencia: Transición duplicada en línea {line_num}: {key}")
+                    print(f"Advertencia: Transición duplicada línea {line_num}: {key}")
                 transitions[key] = (next_state, write_symbol, direction)
                 
-                # Detectar estado inicial (primer estado que aparece)
                 if initial_state is None and current_state not in ['qf', 'halt', 'accept']:
                     initial_state = current_state
                 
-                # Detectar estados de aceptación
                 if next_state in ['qf', 'halt', 'accept']:
                     accept_states.add(next_state)
                 if current_state in ['qf', 'halt', 'accept']:
@@ -71,12 +53,11 @@ def load_turing_machine_from_file(filename):
         print(f"Error: Archivo '{filename}' no encontrado.")
         return None
     except Exception as e:
-        print(f"Error al leer el archivo: {e}")
+        print(f"Error: {e}")
         return None
     
-    # Validaciones
     if not transitions:
-        print("Error: No se encontraron transiciones válidas.")
+        print("Error: No hay transiciones válidas.")
         return None
     
     if initial_state is None:
@@ -86,17 +67,14 @@ def load_turing_machine_from_file(filename):
             initial_state = min(states)  # Usar el primero alfabéticamente
     
     if not accept_states:
-        accept_states = {'qf'}  # Estado de aceptación por defecto
+        accept_states = {'qf'}
     
-    alphabet.add('_')  # Asegurar que el blanco esté en el alfabeto
-    
+    alphabet.add('_')
     return (states, alphabet, transitions, initial_state, accept_states)
 
 
 def print_tm_info(states, alphabet, transitions, initial_state, accept_states):
-    """
-    Imprime información sobre la Máquina de Turing cargada.
-    """
+    """Imprime información de la MT cargada."""
     print("\n" + "="*70)
     print("INFORMACIÓN DE LA MÁQUINA DE TURING")
     print("="*70)

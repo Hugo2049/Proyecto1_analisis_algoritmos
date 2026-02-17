@@ -1,3 +1,5 @@
+"""Análisis empírico: mide tiempo/pasos de ejecución y realiza regresión polinomial."""
+
 import time
 import numpy as np
 import matplotlib.pyplot as plt
@@ -10,17 +12,7 @@ from unary_utils import decimal_to_unary
 
 
 def measure_execution_time(tm, input_string, repetitions=5):
-    """
-    Mide el tiempo de ejecución promedio de la MT para una entrada dada.
-    
-    Args:
-        tm: Instancia de TuringMachine
-        input_string: Cadena de entrada
-        repetitions: Número de repeticiones para promediar
-        
-    Returns:
-        Tupla (tiempo_promedio_segundos, numero_de_pasos)
-    """
+    """Mide tiempo promedio y pasos de ejecución de la MT."""
     times = []
     steps = 0
     
@@ -36,14 +28,8 @@ def measure_execution_time(tm, input_string, repetitions=5):
     return avg_time, steps
 
 
-def run_empirical_analysis(config_file="fibonacci_tm.txt", max_n=15):
-    """
-    Ejecuta el análisis empírico completo.
-    
-    Args:
-        config_file: Archivo de configuración de la MT
-        max_n: Valor máximo de n a probar
-    """
+def run_empirical_analysis(config_file="fibonacci_tm.txt", max_n=5):
+    """Ejecuta análisis empírico completo: tiempo, pasos y regresión polinomial."""
     print("="*70)
     print(" ANÁLISIS EMPÍRICO - TIEMPO DE EJECUCIÓN")
     print("="*70)
@@ -114,18 +100,7 @@ def run_empirical_analysis(config_file="fibonacci_tm.txt", max_n=15):
 
 
 def find_best_polynomial(X, y, label, max_degree=5):
-    """
-    Encuentra el mejor grado de polinomio para ajustar los datos.
-    
-    Args:
-        X: Tamaños de entrada
-        y: Valores a ajustar
-        label: Etiqueta para imprimir
-        max_degree: Grado máximo a probar
-        
-    Returns:
-        Mejor grado encontrado
-    """
+    """Encuentra el mejor grado polinomial para ajustar datos."""
     print(f"\n{label}:")
     print("-"*70)
     
@@ -153,9 +128,7 @@ def find_best_polynomial(X, y, label, max_degree=5):
 
 
 def create_plots(input_sizes, execution_times, num_steps, degree_time, degree_steps):
-    """
-    Crea las gráficas de dispersión y regresión.
-    """
+    """Crea gráficas de tiempo, pasos y combinada con regresiones."""
     X = np.array(input_sizes).reshape(-1, 1)
     
     # Gráfica 1: Tiempo de ejecución
@@ -186,14 +159,15 @@ def create_plots(input_sizes, execution_times, num_steps, degree_time, degree_st
     plt.figure(figsize=(10, 6))
     plt.scatter(input_sizes, num_steps, color='green', label='Datos medidos', alpha=0.6, s=50)
     
-    poly_features = PolynomialFeatures(degree=degree_steps)
-    X_poly = poly_features.fit_transform(X)
-    model = LinearRegression()
-    model.fit(X_poly, num_steps)
+    poly_features_steps = PolynomialFeatures(degree=degree_steps)
+    X_poly_steps = poly_features_steps.fit_transform(X)
+    model_steps = LinearRegression()
+    model_steps.fit(X_poly_steps, num_steps)
     
-    y_plot = model.predict(X_plot_poly)
+    X_plot_poly_steps = poly_features_steps.transform(X_plot)
+    y_plot_steps = model_steps.predict(X_plot_poly_steps)
     
-    plt.plot(X_plot, y_plot, color='orange', label=f'Regresión (grado {degree_steps})', linewidth=2)
+    plt.plot(X_plot, y_plot_steps, color='orange', label=f'Regresión (grado {degree_steps})', linewidth=2)
     plt.xlabel('Tamaño de entrada (número de símbolos)', fontsize=12)
     plt.ylabel('Número de pasos', fontsize=12)
     plt.title('Análisis Empírico: Número de Pasos vs Tamaño de Entrada', fontsize=14, fontweight='bold')
@@ -263,7 +237,7 @@ if __name__ == "__main__":
     
     # Ejecutar análisis
     try:
-        run_empirical_analysis(config_file, max_n=10)
+        run_empirical_analysis(config_file, max_n=5)
     except Exception as e:
         print(f"\nError durante el análisis: {e}")
         import traceback
